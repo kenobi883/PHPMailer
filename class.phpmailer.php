@@ -272,7 +272,7 @@ class PHPMailer
 
     /**
      * SMTP auth type.
-     * Options are LOGIN (default), PLAIN, NTLM, CRAM-MD5
+     * Options are LOGIN (default), PLAIN, NTLM, CRAM-MD5, XOAUTH2
      * @type string
      */
     public $AuthType = '';

@@ -284,7 +284,7 @@ class SMTP
      * @see hello()
      * @param string $username    The user name
      * @param string $password    The password
-     * @param string $authtype    The auth type (PLAIN, LOGIN, NTLM, CRAM-MD5)
+     * @param string $authtype    The auth type (PLAIN, LOGIN, NTLM, CRAM-MD5, XOAUTH2)
      * @param string $realm       The auth realm for NTLM
      * @param string $workstation The auth workstation for NTLM
      * @access public
@@ -395,6 +395,20 @@ class SMTP
 
                 // send encoded credentials
                 return $this->sendCommand('Username', base64_encode($response), 235);
+                break;
+            case 'XOAUTH2':
+                // Start authentication
+                if (!$this->sendCommand('AUTH', 'AUTH XOAUTH2', 334)) {
+                    return false;
+                }
+
+                // Assemble client response string
+                $authString = base64_encode("user=" . $username . "\1auth=Bearer " . $password . "\1\1");
+
+                // Attempt to authenticate
+                if (!$this->sendCommand('AUTH XOAUTH2', $authString, 235)) {
+                    return false;
+                }
                 break;
         }
         return true;
